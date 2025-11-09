@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2 class="mb-4">Dashboard 📊</h2>
+
+<div class="row g-3">
+    <div class="col-md-4">
+        <div class="card shadow-sm">
+            <div class="card-body text-center">
+                <h6 class="text-muted">Categories</h6>
+                <p class="fs-3 fw-bold">{{ total_categories }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card shadow-sm">
+            <div class="card-body text-center">
+                <h6 class="text-muted">Transactions</h6>
+                <p class="fs-3 fw-bold">{{ total_transactions }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card shadow-sm">
+            <div class="card-body text-center">
+                <h6 class="text-muted">Net Balance</h6>
+                <p class="fs-3 fw-bold {{ 'text-success' if net_balance >= 0 else 'text-danger' }}">
+                    {{ "%.2f"|format(net_balance) }}
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<p class="mt-4 text-muted">
+    This will get cooler soon with charts and detailed stats ✨
+</p>
+{% endblock %}
