@@ -1,16 +1,74 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h2 class="mb-3">About This App 🧠</h2>
-<p class="lead">
-    Finance Tracker is a tiny web app we’re building step by step.
-</p>
-<ul>
-    <li>Built with Flask 🐍</li>
-    <li>Uses a SQLite database under the hood 💾</li>
-    <li>Soon: charts, categories, and more shiny stats ✨</li>
-</ul>
-<p class="text-muted">
-    You’re literally watching this project grow in real time.
-</p>
+<div class="row g-4 g-md-5">
+    <div class="col-12 col-lg-7">
+        <h2 class="mb-3">About Finance Tracker 🧾</h2>
+        <p class="lead text-secondary mb-3">
+            Finance Tracker is a personal money overview tool designed to be simple, transparent, and fully under your control.
+        </p>
+        <p class="text-muted mb-3">
+            Instead of relying on third-party apps and complex spreadsheets, this project gives you a
+            lightweight web interface connected to a local database. You decide what to track, how often,
+            and what the data means to you.
+        </p>
+
+        <h5 class="mt-3 mb-2">What it helps you do</h5>
+        <ul class="text-muted">
+            <li>Record income and expenses with clear categories.</li>
+            <li>See totals and net balance without manual calculations.</li>
+            <li>Review recent activity and keep an eye on cash flow.</li>
+            <li>Gradually grow the tool with new features as your needs evolve.</li>
+        </ul>
+
+        <h5 class="mt-4 mb-2">Technology under the hood</h5>
+        <ul class="text-muted">
+            <li><strong>Flask</strong> – lightweight Python web framework.</li>
+            <li><strong>SQLite + SQLAlchemy</strong> – relational database with clean models.</li>
+            <li><strong>Bootstrap</strong> – responsive layout that works on desktop and mobile.</li>
+            <li><strong>Chart.js</strong> – for visualising income vs expenses on the dashboard.</li>
+        </ul>
+    </div>
+
+    <div class="col-12 col-lg-5">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title mb-2">Project status</h5>
+                <p class="small text-muted mb-3">
+                    This is an actively evolving personal project. New functionality can be added as you experiment and learn.
+                </p>
+
+                <div class="mb-3">
+                    <div class="small text-muted mb-1">Current capabilities</div>
+                    <ul class="small text-muted mb-0">
+                        <li>Add, edit, and delete transactions.</li>
+                        <li>Use categories to group spending and income.</li>
+                        <li>See high-level metrics on the dashboard.</li>
+                        <li>View a quick visual comparison of income vs expenses.</li>
+                    </ul>
+                </div>
+
+                <hr>
+
+                <div class="mb-3">
+                    <div class="small text-muted mb-1">Possible next steps</div>
+                    <ul class="small text-muted mb-0">
+                        <li>Monthly or weekly breakdown of spending.</li>
+                        <li>Filter dashboard by date range or category.</li>
+                        <li>Export data to CSV for backup or analysis.</li>
+                        <li>Authentication and multi-user support.</li>
+                    </ul>
+                </div>
+
+                <div class="border rounded-4 px-3 py-3 mt-2 bg-light">
+                    <div class="small text-muted mb-1">Why it exists</div>
+                    <p class="small mb-0">
+                        This app is both a practical finance tracker and a coding playground. It’s meant to be
+                        readable, extendable, and a safe space to practice full-stack concepts.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

@@ -1,10 +1,118 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="text-center mt-5">
-    <h1 class="display-5 fw-bold text-primary">Welcome to Finance Tracker</h1>
-    <p class="lead text-secondary">
-        We’ll track your income and expenses here 🚀
-    </p>
+<div class="row align-items-center g-4 g-lg-5">
+    <!-- Hero text -->
+    <div class="col-12 col-lg-6">
+        <p class="hero-tag text-primary mb-2">PERSONAL FINANCE, SIMPLIFIED</p>
+        <h1 class="hero-title display-5 text-dark mb-3">
+            Welcome to <span class="text-primary">Finance Tracker</span>
+        </h1>
+        <p class="lead text-secondary mb-4">
+            Keep an eye on your income, expenses, and balance in one clean, friendly place.
+            No spreadsheets, no stress.
+        </p>
+
+        <div class="d-flex flex-wrap gap-2 gap-sm-3 mb-4">
+            <a href="{{ url_for('dashboard') }}" class="btn btn-primary btn-lg">
+                View dashboard 📊
+            </a>
+            <a href="{{ url_for('transactions') }}" class="btn btn-outline-dark btn-lg">
+                Add a transaction 💸
+            </a>
+        </div>
+
+        <div class="d-flex flex-wrap gap-3 text-muted small">
+            <span>✓ Completely local (SQLite)</span>
+            <span>✓ Quick overview of your money</span>
+            <span>✓ Built step-by-step by you</span>
+        </div>
+    </div>
+
+    <!-- Hero card -->
+    <div class="col-12 col-lg-6">
+        <div class="card p-3 p-md-4">
+            <div class="card-body">
+                <h5 class="card-title mb-3">Today’s Snapshot</h5>
+                <p class="mb-3 text-muted">
+                    These numbers will update as you start adding real transactions.
+                </p>
+
+                <div class="row g-3">
+                    <div class="col-12 col-sm-4">
+                        <div class="border rounded-4 px-3 py-3 h-100">
+                            <div class="small text-muted mb-1">Balance</div>
+                            <div class="fs-4 fw-bold text-success">
+                                <!-- Placeholder sample -->
+                                0.00
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-4">
+                        <div class="border rounded-4 px-3 py-3 h-100">
+                            <div class="small text-muted mb-1">This month</div>
+                            <div class="fs-5 fw-semibold">
+                                +0 income
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-4">
+                        <div class="border rounded-4 px-3 py-3 h-100">
+                            <div class="small text-muted mb-1">Categories</div>
+                            <div class="fs-5 fw-semibold">
+                                6 default
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="my-4">
+
+                <p class="mb-2 text-muted small">What you can do here:</p>
+                <ul class="small mb-0">
+                    <li>Record income & expenses with categories.</li>
+                    <li>See counts and net balance on the dashboard.</li>
+                    <li>Later: visual charts of your spending habits.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Feature cards row -->
+<div class="row row-cols-1 row-cols-md-3 g-3 g-md-4 mt-4 mt-md-5">
+    <div class="col">
+        <div class="card h-100">
+            <div class="card-body">
+                <div class="mb-2 fs-3">⚡</div>
+                <h5 class="card-title">Fast to update</h5>
+                <p class="card-text text-muted small">
+                    Add transactions in seconds and see updates across the app instantly.
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card h-100">
+            <div class="card-body">
+                <div class="mb-2 fs-3">🎯</div>
+                <h5 class="card-title">See the big picture</h5>
+                <p class="card-text text-muted small">
+                    Dashboard summary helps you understand where your money is going.
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card h-100">
+            <div class="card-body">
+                <div class="mb-2 fs-3">🧩</div>
+                <h5 class="card-title">Built to grow</h5>
+                <p class="card-text text-muted small">
+                    We can keep adding features: charts, filters, multi-user login, and more.
+                </p>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}

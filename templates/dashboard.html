@@ -1,40 +1,314 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h2 class="mb-4">Dashboard 📊</h2>
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-3 mb-md-4 gap-2">
+    <div>
+        <h2 class="mb-1">Dashboard 📊</h2>
+        <p class="text-muted mb-0">
+            Overview of your finances. Use the filters to focus on a specific period or category.
+        </p>
+    </div>
+    <a href="{{ url_for('transactions') }}" class="btn btn-primary">
+        Add new transaction
+    </a>
+</div>
 
-<div class="row g-3">
-    <div class="col-md-4">
-        <div class="card shadow-sm">
-            <div class="card-body text-center">
-                <h6 class="text-muted">Categories</h6>
-                <p class="fs-3 fw-bold">{{ total_categories }}</p>
+<!-- Filters -->
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="get" class="row g-3 align-items-end">
+            <div class="col-12 col-md-3">
+                <label class="form-label small fw-semibold text-muted">From date</label>
+                <input
+                    type="date"
+                    class="form-control"
+                    name="start_date"
+                    value="{{ start_date_str or '' }}"
+                >
+            </div>
+            <div class="col-12 col-md-3">
+                <label class="form-label small fw-semibold text-muted">To date</label>
+                <input
+                    type="date"
+                    class="form-control"
+                    name="end_date"
+                    value="{{ end_date_str or '' }}"
+                >
+            </div>
+            <div class="col-12 col-md-3">
+                <label class="form-label small fw-semibold text-muted">Category</label>
+                <select class="form-select" name="category_id">
+                    <option value="">All categories</option>
+                    {% for cat in categories %}
+                        <option value="{{ cat.id }}"
+                            {% if selected_category_id == cat.id %}selected{% endif %}>
+                            {{ cat.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-12 col-md-3 d-flex gap-2">
+                <button type="submit" class="btn btn-primary w-100">
+                    Apply filters
+                </button>
+                <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary d-none d-md-inline-flex">
+                    Reset
+                </a>
+            </div>
+        </form>
+        <p class="small text-muted mt-2 mb-0">
+            Showing {{ total_transactions }} transaction{{ 's' if total_transactions != 1 }} based on current filters.
+        </p>
+    </div>
+</div>
+
+<!-- Summary cards -->
+<div class="row g-3 g-md-4 mb-4">
+    <div class="col-12 col-md-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <p class="text-muted text-uppercase small mb-1">Total Income</p>
+                <p class="fs-3 fw-bold text-success mb-2">
+                    {{ "%.2f"|format(total_income) }}
+                </p>
+                <p class="small text-muted mb-0">
+                    All positive transactions in the selected range.
+                </p>
             </div>
         </div>
     </div>
 
-    <div class="col-md-4">
-        <div class="card shadow-sm">
-            <div class="card-body text-center">
-                <h6 class="text-muted">Transactions</h6>
-                <p class="fs-3 fw-bold">{{ total_transactions }}</p>
+    <div class="col-12 col-md-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <p class="text-muted text-uppercase small mb-1">Total Expenses</p>
+                <p class="fs-3 fw-bold text-danger mb-2">
+                    {{ "%.2f"|format(total_expenses) }}
+                </p>
+                <p class="small text-muted mb-0">
+                    Sum of all expenses (shown as positive) in the selected range.
+                </p>
             </div>
         </div>
     </div>
 
-    <div class="col-md-4">
-        <div class="card shadow-sm">
-            <div class="card-body text-center">
-                <h6 class="text-muted">Net Balance</h6>
-                <p class="fs-3 fw-bold {{ 'text-success' if net_balance >= 0 else 'text-danger' }}">
+    <div class="col-12 col-md-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <p class="text-muted text-uppercase small mb-1">Net Balance</p>
+                <p class="fs-3 fw-bold {{ 'text-success' if net_balance >= 0 else 'text-danger' }} mb-2">
                     {{ "%.2f"|format(net_balance) }}
+                </p>
+                <p class="small text-muted mb-0">
+                    Income minus expenses for the filtered period.
                 </p>
             </div>
         </div>
     </div>
 </div>
 
-<p class="mt-4 text-muted">
-    This will get cooler soon with charts and detailed stats ✨
-</p>
+<!-- Second row: money flow + snapshot -->
+<div class="row g-3 g-md-4 mb-4">
+    <div class="col-12 col-lg-6">
+        <div class="card h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h5 class="card-title mb-0">Money flow</h5>
+                    <span class="badge bg-light text-secondary border">
+                        Filtered view
+                    </span>
+                </div>
+                <p class="small text-muted">
+                    Comparison of total income and expenses based on your filters.
+                </p>
+                <div style="height: 260px;">
+                    <canvas id="moneyChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-lg-6">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title mb-2">Snapshot</h5>
+                <p class="small text-muted">
+                    Key figures that describe the currently visible dataset.
+                </p>
+                <div class="row g-3 mt-2">
+                    <div class="col-6">
+                        <div class="border rounded-4 px-3 py-3 h-100">
+                            <div class="small text-muted mb-1">Transactions</div>
+                            <div class="fs-4 fw-semibold">{{ total_transactions }}</div>
+                            <div class="small text-muted">records in this view</div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="border rounded-4 px-3 py-3 h-100">
+                            <div class="small text-muted mb-1">Categories</div>
+                            <div class="fs-4 fw-semibold">{{ total_categories }}</div>
+                            <div class="small text-muted">defined overall</div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="border rounded-4 px-3 py-3 h-100">
+                            <div class="small text-muted mb-1">Financial status</div>
+                            {% if net_balance >= 0 %}
+                                <div class="fw-semibold text-success mb-1">You are currently in surplus ✅</div>
+                            {% else %}
+                                <div class="fw-semibold text-danger mb-1">You are currently in deficit ⚠️</div>
+                            {% endif %}
+                            <div class="small text-muted">
+                                Values reflect only the transactions in the filtered dataset above.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Third row: Monthly trend -->
+<div class="card mb-4">
+    <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <h5 class="card-title mb-0">Monthly trend</h5>
+            <span class="badge bg-light text-secondary border">
+                Income vs expenses over time
+            </span>
+        </div>
+        <p class="small text-muted">
+            Aggregated totals per month based on the current filters. If no filters are applied, this shows your full history.
+        </p>
+        <div style="height: 280px;">
+            <canvas id="trendChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<!-- Recent activity -->
+<div class="card">
+    <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <h5 class="card-title mb-0">Recent activity</h5>
+            <a href="{{ url_for('transactions') }}" class="small text-decoration-none">
+                Manage transactions →
+            </a>
+        </div>
+        <p class="small text-muted">
+            The 5 most recent transactions in the current filtered view.
+        </p>
+
+        <div class="table-responsive">
+            <table class="table table-sm align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Description</th>
+                        <th>Category</th>
+                        <th class="text-end">Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for tx in recent_transactions %}
+                    <tr>
+                        <td>{{ tx.date.isoformat() }}</td>
+                        <td>{{ tx.description }}</td>
+                        <td>{{ tx.category.name }}</td>
+                        <td class="text-end">
+                            <span class="{{ 'text-success' if tx.amount > 0 else 'text-danger' }}">
+                                {{ "%.2f"|format(tx.amount) }}
+                            </span>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="4" class="text-center text-muted py-3">
+                            No transactions found for the selected filters.
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+    // Bar chart: income vs expenses (current view)
+    const income = {{ total_income | round(2) }};
+    const expenses = {{ total_expenses | round(2) }};
+
+    const ctx = document.getElementById('moneyChart');
+
+    if (ctx && (income > 0 || expenses > 0)) {
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Income', 'Expenses'],
+                datasets: [{
+                    data: [income, expenses],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    }
+
+    // Line chart: monthly trend
+    const trendLabels = {{ trend_labels | tojson }};
+    const trendIncome = {{ trend_income | tojson }};
+    const trendExpenses = {{ trend_expenses | tojson }};
+
+    const trendCtx = document.getElementById('trendChart');
+
+    if (trendCtx && trendLabels.length > 0) {
+        new Chart(trendCtx, {
+            type: 'line',
+            data: {
+                labels: trendLabels,
+                datasets: [
+                    {
+                        label: 'Income',
+                        data: trendIncome,
+                        tension: 0.25
+                    },
+                    {
+                        label: 'Expenses',
+                        data: trendExpenses,
+                        tension: 0.25
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    }
+</script>
 {% endblock %}
