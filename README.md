@@ -8,10 +8,10 @@ Track income and expenses, view summaries, visualize financial data, and manage 
 ## 🖼️ Preview
 
 The app provides:
-- A **Dashboard** with summaries and income/expense visualizations  
-- A **Transactions Manager** for adding, editing, and deleting entries  
-- A **Modern, Responsive UI** built with Bootstrap 5 and custom CSS  
-- A **Professional About Page** describing the project purpose and technologies  
+- A **Dashboard** with summaries, filters, and income/expense visualizations  
+- A **Transactions Manager** for adding, editing, deleting, and exporting data  
+- A **Modern, Responsive UI** with Dark Mode support  
+- A **Professional About Page** describing the project and technologies  
 
 ---
 
@@ -20,11 +20,14 @@ The app provides:
 | Category | Description |
 |-----------|--------------|
 | 💸 **Transactions** | Add, edit, and delete transactions with type (income/expense), date, and category. |
-| 📊 **Dashboard** | View totals for income, expenses, net balance, and a visual Chart.js bar chart comparison. |
-| 📁 **Categories** | Predefined categories (Salary, Food, Rent, Utilities, etc.) stored in a relational database. |
-| 💅 **Responsive Design** | Works on desktop, tablet, and mobile screens. |
-| 🧠 **Database** | Uses SQLAlchemy ORM with SQLite for simplicity. |
-| 🎨 **Custom Theme** | Professional Bootstrap-based layout with a custom CSS file for consistent branding. |
+| 📊 **Dashboard** | View totals for income, expenses, and net balance, with bar & trend charts. |
+| 🧮 **Filters** | Filter dashboard data by date range or category for focused analysis. |
+| 📈 **Monthly Trend Chart** | Visualize income and expenses over time using Chart.js. |
+| 💾 **CSV Export** | Download all transactions as a CSV file with one click. |
+| 🌙 **Dark Mode** | Switch between light and dark themes — your choice is remembered. |
+| 💅 **Responsive Design** | Works beautifully on desktop, tablet, and mobile screens. |
+| 🧠 **Database** | Uses SQLAlchemy ORM with SQLite for simplicity and performance. |
+| 🎨 **Custom Theme** | Bootstrap-based layout with additional CSS for branding and polish. |
 
 ---
 
@@ -56,7 +59,6 @@ Finance-Tracker/
 ├── index.html # Home page
 ├── dashboard.html # Dashboard with chart + metrics
 ├── transactions.html # Add / view / delete / edit transactions
-├── edit_transaction.html # Edit transaction form
 └── about.html # About project information
 ```
 ### Install dependencies
@@ -88,15 +90,16 @@ The app auto-generates categories on first launch:
 - Chart.js Bar Graph — visual comparison of income vs expenses
 
 ### CRUD Functionality
-#### Action	Description
-- ➕ Add Transaction	Fill out the form and submit.
-- ✏️ Edit Transaction	Modify date, amount, type, or category.
-- 🗑 Delete Transaction	Permanently remove an entry with confirmation.
-- 🎨 Styling & Responsiveness
+  Action	  Description
+- Add Transaction	Fill out the form and submit.
+- Edit Transaction	Modify date, amount, type, or category.
+- Delete Transaction	Permanently remove an entry with confirmation.
+- Export CSV         Download all transaction data as a CSV file.
 
 ### Uses Bootstrap 5 for grid layout and responsive utilities.
 - Custom style.css ensures cohesive colors, padding, and typography.
 - Fully responsive design across phones, tablets, and desktop browsers.
+- Includes Dark Mode toggle with persistent theme memory.
 
 ## 🔒 Database Schema
 
